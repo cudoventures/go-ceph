@@ -24,8 +24,8 @@ type Account struct {
 
 // GetAccount retrieves a given object store account
 func (api *API) GetAccount(ctx context.Context, account Account) (Account, error) {
-	if account.ID == "" {
-		return Account{}, errMissingAccountID
+	if account.ID == "" && account.Name == "" {
+		return Account{}, errMissingAccountIDOrName
 	}
 
 	body, err := api.call(ctx, http.MethodGet, "/account", valueToURLParams(account, []string{"id", "tenant", "name"}))
@@ -40,6 +40,21 @@ func (api *API) GetAccount(ctx context.Context, account Account) (Account, error
 	}
 
 	return a, nil
+}
+
+// GetAccounts lists all object store accounts
+func (api *API) GetAccounts(ctx context.Context) (*[]string, error) {
+	body, err := api.call(ctx, http.MethodGet, "/metadata/account", nil)
+	if err != nil {
+		return nil, err
+	}
+	var accounts *[]string
+	err = json.Unmarshal(body, &accounts)
+	if err != nil {
+		return nil, fmt.Errorf("%s. %s. %w", unmarshalError, string(body), err)
+	}
+
+	return accounts, nil
 }
 
 // CreateAccount creates an account in the object store
@@ -61,11 +76,11 @@ func (api *API) CreateAccount(ctx context.Context, account Account) (Account, er
 
 // RemoveAccount removes an account from the object store
 func (api *API) RemoveAccount(ctx context.Context, account Account) error {
-	if account.ID == "" {
-		return errMissingAccountID
+	if account.ID == "" && account.Name == "" {
+		return errMissingAccountIDOrName
 	}
 
-	_, err := api.call(ctx, http.MethodDelete, "/account", valueToURLParams(account, []string{"id"}))
+	_, err := api.call(ctx, http.MethodDelete, "/account", valueToURLParams(account, []string{"id", "tenant", "name"}))
 	if err != nil {
 		return err
 	}
@@ -75,8 +90,8 @@ func (api *API) RemoveAccount(ctx context.Context, account Account) error {
 
 // ModifyAccount updates an account in the object store
 func (api *API) ModifyAccount(ctx context.Context, account Account) (Account, error) {
-	if account.ID == "" {
-		return Account{}, errMissingAccountID
+	if account.ID == "" && account.Name == "" {
+		return Account{}, errMissingAccountIDOrName
 	}
 
 	body, err := api.call(ctx, http.MethodPost, "/account", valueToURLParams(account, []string{"id", "tenant", "name", "email", "quota", "bucket-quota", "max-users", "max-roles", "max-groups", "max-buckets", "max-access-keys"}))

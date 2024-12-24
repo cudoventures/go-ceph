@@ -97,7 +97,7 @@ var (
 	errMissingBucketID        = errors.New("missing bucket ID")
 	errMissingBucket          = errors.New("missing bucket")
 	errMissingUserBucket      = errors.New("missing bucket")
-	errMissingAccountID       = errors.New("missing account ID")
+	errMissingAccountIDOrName = errors.New("missing account ID or name")
 	errUnsupportedKeyType     = errors.New("unsupported key type")
 )
 
