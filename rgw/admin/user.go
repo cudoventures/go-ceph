@@ -34,6 +34,8 @@ type User struct {
 	GenerateStat        *bool          `url:"stats"`
 	Stat                UserStat       `json:"stats"`
 	UserCaps            string         `url:"user-caps"`
+	AccountID           string         `json:"account_id" url:"account-id"`
+	AccountRoot         *bool          `json:"account_root" url:"account-root"`
 }
 
 // SubuserSpec represents a subusers of a ceph-rgw user
@@ -158,7 +160,7 @@ func (api *API) CreateUser(ctx context.Context, user User) (User, error) {
 	}
 
 	//  valid parameters not supported by go-ceph: system, exclusive, default-placement, placement-tags
-	body, err := api.call(ctx, http.MethodPut, "/user", valueToURLParams(user, []string{"uid", "display-name", "email", "key-type", "access-key", "secret-key", "user-caps", "tenant", "generate-key", "max-buckets", "suspended", "op-mask"}))
+	body, err := api.call(ctx, http.MethodPut, "/user", valueToURLParams(user, []string{"uid", "display-name", "email", "key-type", "access-key", "secret-key", "user-caps", "tenant", "generate-key", "max-buckets", "suspended", "op-mask", "account-id", "account-root"}))
 	if err != nil {
 		return User{}, err
 	}
