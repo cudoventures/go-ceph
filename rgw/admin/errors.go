@@ -7,6 +7,12 @@ import (
 )
 
 const (
+	// ErrAccountExists - Attempt to create existing account
+	ErrAccountExists errorReason = "AccountAlreadyExists"
+
+	// ErrNoSuchAccount - Account does not exist
+	ErrNoSuchAccount errorReason = "NoSuchAccount"
+
 	// ErrUserExists - Attempt to create existing user
 	ErrUserExists errorReason = "UserAlreadyExists"
 
